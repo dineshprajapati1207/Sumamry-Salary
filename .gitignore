@@ -1,0 +1,14 @@
+node_modules
+.next
+.env
+.env.local
+.env.*.local
+.data
+.vercel
+*.log
+.DS_Store
+# Never commit real salary files or service-account keys
+*.xls
+*.xlsx
+*.xlsm
+service-account*.json
