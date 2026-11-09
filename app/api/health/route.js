@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { supabaseKeyProblem } from '@/lib/sources/storage';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,5 +13,6 @@ export async function GET() {
     GOOGLE_SERVICE_ACCOUNT_JSON: has('GOOGLE_SERVICE_ACCOUNT_JSON'),
     SUPABASE_URL: has('SUPABASE_URL'),
     SUPABASE_SERVICE_ROLE_KEY: has('SUPABASE_SERVICE_ROLE_KEY'),
+    SUPABASE_KEY_IS_SERVICE_ROLE: has('SUPABASE_SERVICE_ROLE_KEY') ? supabaseKeyProblem() === null : false,
   });
 }
