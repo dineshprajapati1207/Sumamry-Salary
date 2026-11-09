@@ -44,6 +44,7 @@ export default function Dashboard() {
   const sigRef = useRef(null);
   const viewRef = useRef(null);
   const lastCheck = useRef(0);
+  const forceRef = useRef(false); // set after an upload so the next load bypasses cached file lists
 
   const showToast = useCallback((message, type = 'ok') => {
     setToast({ message, type });
@@ -105,7 +106,8 @@ export default function Dashboard() {
     viewRef.current = view;
     if (view) {
       setNewFound(null);
-      loadReport(view);
+      loadReport(view, forceRef.current);
+      forceRef.current = false;
     }
   }, [view, loadReport]);
 
@@ -164,7 +166,10 @@ export default function Dashboard() {
 
   async function onUploaded(res) {
     const f = await loadFiles(true);
-    if (f) setView({ mode: 'month', year: res.year, month: res.month });
+    if (f) {
+      forceRef.current = true;
+      setView({ mode: 'month', year: res.year, month: res.month });
+    }
   }
 
   async function onExport(reportId, format) {
