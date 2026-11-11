@@ -31,7 +31,7 @@ function TableBlock({ block, showLabel = true }) {
     return [...list, ...totals];
   }, [block, filter, sort]);
 
-  // Show a repeated group label (e.g. Segment) only once, unless the user has sorted.
+  // Show a repeated group label (e.g. Segment) only once (blank below it); when the user sorts or filters, every row shows its label.
   let prevGroup = null;
   const isFiltered = filter.trim().length > 0;
 
@@ -80,8 +80,8 @@ function TableBlock({ block, showLabel = true }) {
                       if (v === prevGroup) dim = true;
                     }
                     return (
-                      <td key={c.key} className={`px-3 py-1.5 ${c.type === 'text' ? 'text-left' : 'num text-right'} ${dim ? 'text-slate-300' : ''}`}>
-                        {cellText(c, v)}
+                      <td key={c.key} className={`px-3 py-1.5 ${c.type === 'text' ? 'text-left' : 'num text-right'}`}>
+                        {dim ? '' : cellText(c, v)}
                       </td>
                     );
                   })}
