@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabaseKeyProblem } from '@/lib/sources/storage';
+import { supabaseKeyProblem, supabaseUrl, supabaseUrlProblem } from '@/lib/sources/storage';
 import { serviceAccountInfo } from '@/lib/sources/drive';
 
 export const dynamic = 'force-dynamic';
@@ -17,8 +17,20 @@ export async function GET() {
       drive.problem = e.message;
     }
   }
+  const supa = { SUPABASE_URL_used: null, SUPABASE_URL_problem: null, SUPABASE_reachable: null };
+  if (has('SUPABASE_URL')) {
+    supa.SUPABASE_URL_used = supabaseUrl();
+    supa.SUPABASE_URL_problem = supabaseUrlProblem();
+    try {
+      const r = await fetch(`${supa.SUPABASE_URL_used}/rest/v1/`, { signal: AbortSignal.timeout(6000) });
+      supa.SUPABASE_reachable = `yes (HTTP ${r.status})`;
+    } catch (e) {
+      supa.SUPABASE_reachable = `NO: ${e?.cause?.code || e?.message || 'connection failed'}. Check the URL and whether the project is paused.`;
+    }
+  }
   return NextResponse.json({
     ...drive,
+    ...supa,
     DRIVE_ROOT_FOLDER_ID: has('DRIVE_ROOT_FOLDER_ID'),
     GOOGLE_SERVICE_ACCOUNT_JSON: has('GOOGLE_SERVICE_ACCOUNT_JSON'),
     SUPABASE_URL: has('SUPABASE_URL'),
